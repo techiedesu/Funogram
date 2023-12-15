@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Funogram.Generator.Types\Funogram.Generator.Types.fsproj" />
+      <ProjectReference Include="..\Funogram\Funogram.fsproj" />
+    </ItemGroup>
+
+</Project>

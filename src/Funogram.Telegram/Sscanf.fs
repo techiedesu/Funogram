@@ -7,12 +7,12 @@ open Microsoft.FSharp.Reflection
 /// Verify that f x, and then return x, otherwise fail witha 'format failure' message
 let private check f x = if f x then x else failwithf "format failure \"%s\"" x
 
-let private parseDecimal x = Decimal.Parse(x, System.Globalization.CultureInfo.InvariantCulture)
+let private parseDecimal (x: string) = Decimal.Parse(x, System.Globalization.CultureInfo.InvariantCulture)
 
 /// The supported characters for the formatter
 let parsers =
   dict [
-    'b', Boolean.Parse >> box
+    'b', fun (x: string) -> x |> Boolean.Parse |> box
     'd', int64 >> box
     'i', int64 >> box
     's', box

@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Include="Types.fs" />
+      <Compile Include="Helpers.fs" />
+      <Compile Include="Code.fs" />
+      <Compile Include="MethodsParser.fs" />
+      <Compile Include="MethodsGenerator.fs" />
+      <Compile Include="Constants.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FSharp.Data" Version="4.2.8" />
+      <PackageReference Include="FSharp.SystemTextJson" Version="0.19.13" />
+    </ItemGroup>
+
+</Project>

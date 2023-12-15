@@ -1,9 +1,9 @@
 ﻿module Funogram.Generator.Program
 
-open System
 open System.IO
 open Argu
 open Funogram.Generator.Methods
+open Funogram.Generator
 open Funogram.Generator.Types
 
 type CliArguments =
@@ -18,7 +18,10 @@ type CliArguments =
       | Methods -> "Generate methods"
       | Cached -> "Take HTML page from local cache if possible"
 
-let processAsync (args: CliArguments list) =
+let jsonTypeInfoResolverApply (o: System.Text.Json.JsonSerializerOptions) =
+  o.TypeInfoResolver <- Funogram.SourceGen.GeneratorTypes.Default
+
+let processAsync jsonTypeInfoResolverApply (args: CliArguments list) =
   async {
     let cached = args |> List.contains CliArguments.Cached
     let! html =
@@ -32,12 +35,12 @@ let processAsync (args: CliArguments list) =
     let all = not hasTypes && not hasMethods
     let genTypes = hasTypes || all
     let genMethods = hasMethods || all
-
+    
     if genTypes then    
       TypesParser.mkParser html
       |> TypesParser.withResultPath (Path.Combine(Constants.OutputDir, "types.json"))
-      |> TypesParser.loadRemapData "./RemapTypes.json"
-      |> TypesParser.parse
+      |> TypesParser.loadRemapData jsonTypeInfoResolverApply "./RemapTypes.json"
+      |> TypesParser.parse jsonTypeInfoResolverApply
       
       |> TypesGenerator.mkGenerator (Path.Combine(Constants.CodeOutputDir, Constants.TypesFileName))
       |> TypesGenerator.generate
@@ -45,8 +48,8 @@ let processAsync (args: CliArguments list) =
     if genMethods then
       MethodsParser.mkParser html
       |> MethodsParser.withResultPath (Path.Combine(Constants.OutputDir, "methods.json"))
-      |> MethodsParser.loadRemapData "./RemapMethods.json"
-      |> MethodsParser.parse
+      |> MethodsParser.loadRemapData jsonTypeInfoResolverApply "./RemapMethods.json"
+      |> MethodsParser.parse (fun x -> x.TypeInfoResolver <- Funogram.SourceGen.GeneratorMethods.Default)
       
       |> MethodsGenerator.mkGenerator (Path.Combine(Constants.CodeOutputDir, Constants.MethodsFileName))
       |> MethodsGenerator.generate
@@ -60,7 +63,7 @@ let main argv =
     let result = result.GetAllResults()
 
     try
-      processAsync result |> Async.RunSynchronously
+      processAsync jsonTypeInfoResolverApply result |> Async.RunSynchronously
     with
     | e ->
       printfn "%A" e

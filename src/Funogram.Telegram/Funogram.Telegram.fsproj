@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <PublishAot>true</PublishAot>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
         <Compile Include="Types.fs" />
@@ -10,9 +11,14 @@
         <Compile Include="Bot.fs" />
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\Funogram.Generator\Funogram.Generator.fsproj" />
+      <ProjectReference Include="..\Funogram.SourceGen\Funogram.SourceGen.csproj" />
       <ProjectReference Include="..\Funogram\Funogram.fsproj" />
     </ItemGroup>
     <ItemGroup>
         <None Include="..\..\docs\files\img\logo.png" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="FSharp.Data" Version="4.2.8" />
     </ItemGroup>
 </Project>
