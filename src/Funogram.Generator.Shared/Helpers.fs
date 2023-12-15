@@ -79,10 +79,11 @@ let convertTLTypeToFSharpType (typeString: string) (description: string) (option
   else
     typeString
 
-let getJsonSerializerOptions () =
+let getJsonSerializerOptions (cont: JsonSerializerOptions -> unit) =
   let serializerOptions = JsonSerializerOptions()
   serializerOptions.Converters.Add(JsonFSharpConverter(allowNullFields = true))
   serializerOptions.WriteIndented <- true
+  serializerOptions |> cont
   serializerOptions
 
 let compareWildcard (expression: string) (value: string) =

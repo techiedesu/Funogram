@@ -27,9 +27,9 @@ let mkParser (document: HtmlDocument) =
 let withResultPath resultPath config =
   { config with ParseResultPath = Some resultPath }
 
-let loadRemapData remapPath config =
+let loadRemapData jsonCont remapPath config =
   if File.Exists remapPath then
-    let serializerOptions = Helpers.getJsonSerializerOptions ()
+    let serializerOptions = Helpers.getJsonSerializerOptions (jsonCont)
     try
       use file = File.OpenRead remapPath
       let result = JsonSerializer.Deserialize(file, serializerOptions)
@@ -189,7 +189,7 @@ let private remap (remapTypes: ApiType[]) (types: ApiType[]) =
       ) tp
   )
 
-let parse (config: ParseConfig) =
+let parse jsonCont (config: ParseConfig) =
   let sw = Stopwatch()
   sw.Start()
   printfn "Parsing page for methods..."
@@ -271,7 +271,7 @@ let parse (config: ParseConfig) =
       Directory.CreateDirectory dir |> ignore
 
     printfn "Writing types to %s" parseResultPath
-    let serializerOptions = Helpers.getJsonSerializerOptions ()
+    let serializerOptions = Helpers.getJsonSerializerOptions (jsonCont)
     let serializedTypes = JsonSerializer.Serialize(apiMethods, serializerOptions)
     File.WriteAllText(parseResultPath, serializedTypes)
     
